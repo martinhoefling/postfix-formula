@@ -23,3 +23,12 @@ postfix:
     mailbox_size_limit: 0
     recipient_delimiter: +
     inet_interfaces: all
+  aliases: |
+    # /etc/aliases, managed by salt
+    mailer-daemon: postmaster
+    postmaster: root
+    nobody: root
+    hostmaster: root
+  sasl_passwd: |
+    example.com someuser:somepass
+

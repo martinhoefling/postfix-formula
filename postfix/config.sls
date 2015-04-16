@@ -20,7 +20,21 @@ include:
     - watch_in:
       - service: postfix
     - template: jinja
+
 {% if salt['pillar.get']('postfix:manage_master_config', True) %}
+{% if salt['pillar.get']('postfix:custom_master_config', False) %}
+/etc/postfix/master.cf:
+  file.managed:
+    - source: salt://postfix/master.cf.custom
+    - user: root
+    - group: root
+    - mode: 644
+    - require:
+      - pkg: postfix
+    - watch_in:
+      - service: postfix
+    - template: jinja
+{% else %}
 /etc/postfix/master.cf:
   file.managed:
     - source: salt://postfix/files/master.cf
@@ -32,4 +46,5 @@ include:
     - watch_in:
       - service: postfix
     - template: jinja
+{% endif %}
 {% endif %}

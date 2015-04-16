@@ -37,22 +37,23 @@ run-newaliases:
       - file: /etc/aliases
 {% endif %}
 
+{% for postmap in ['virtual', 'sasl_passwd', 'relaymap'] %}
 # manage /etc/postfix/virtual if data found in pillar
-{% if 'virtual' in pillar.get('postfix', '') %}
-/etc/postfix/virtual:
+{% if postmap in pillar.get('postfix', '') %}
+/etc/postfix/{{ postmap }}:
   file.managed:
-    - source: salt://postfix/virtual
+    - contents_pillar: postfix:{{ postmap }}
     - user: root
     - group: root
     - mode: 644
-    - template: jinja
     - require:
       - pkg: postfix
 
-run-postmap:
+run-postmap-{{ postmap }}:
   cmd.wait:
-    - name: /usr/sbin/postmap /etc/postfix/virtual
+    - name: /usr/sbin/postmap /etc/postfix/{{ postmap }}
     - cwd: /
     - watch:
-      - file: /etc/postfix/virtual
+      - file: /etc/postfix/{{ postmap }}
 {% endif %}
+{% endfor %}

@@ -50,10 +50,15 @@
 {{ set_parameter('policyd-spf_time_limit', '3600s') }}
 {{ set_parameter('smtpd_relay_restrictions', 'permit_mynetworks permit_sasl_authenticated defer_unauth_destination check_policy_service unix:private/policyd-spf') }}
 
-
-{% if 'virtual' in pillar.get('postfix','') %}
-virtual_alias_maps = hash:/etc/postfix/virtual
-{% endif %}
+{% if 'virtual' in pillar.get('postfix','') -%}
+{{ set_parameter('virtual_alias_maps', 'hash:/etc/postfix/virtual')  }}
+{% endif -%}
+{% if 'sasl_passwd' in pillar.get('postfix','') -%}
+{{ set_parameter('smtp_sasl_password_maps', 'hash:/etc/postfix/sasl_passwd')  }}
+{% endif -%}
+{% if 'relaymap' in pillar.get('postfix','') -%}
+{{ set_parameter('sender_dependent_relayhost_maps', 'hash:/etc/postfix/relaymap')  }}
+{% endif -%}
 
 {# Accept arbitrary parameters -#}
 {% for parameter in config -%}
