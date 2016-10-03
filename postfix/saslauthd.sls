@@ -1,3 +1,6 @@
+include:
+  - postfix
+
 exim4:
   pkg.purged
 
@@ -25,3 +28,11 @@ saslauthd:
         mech_list: PLAIN LOGIN
         saslauthd_path: /var/run/saslauthd/mux
         autotransition:true
+
+add_postfix_to_sasl:
+  cmd.run:
+    - name:  usermod -a -G sasl postfix
+    - unless: getent group sasl | grep postfix
+    - watch_in:
+      - service: postfix
+      - service: saslauthd
