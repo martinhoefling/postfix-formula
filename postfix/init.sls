@@ -37,7 +37,7 @@ run-newaliases:
       - file: /etc/aliases
 {% endif %}
 
-{% for postmap in ['virtual', 'sasl_passwd', 'relaymap'] %}
+{% for postmap in ['virtual', 'sasl_passwd', 'relaymap', 'generic'] %}
 # manage /etc/postfix/virtual if data found in pillar
 {% if postmap in pillar.get('postfix', '') %}
 /etc/postfix/{{ postmap }}:
